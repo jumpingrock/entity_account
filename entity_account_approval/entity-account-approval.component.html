@@ -1,0 +1,150 @@
+<breadcrumbs active="inquiry"></breadcrumbs>
+<!-- Frame of the page -->
+<div class="container-fluid">
+    <form (ngSubmit)="doSave(f)" #f="ngForm" class="form-horizontal">
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">Entity Account Approval</div>
+                    <br>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">Action : </label>
+                        <div class="col-sm-5">
+                            <label name="Action" class="control-label" style="text-align:left;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">Entity name : </label>
+                        <div class="col-sm-5">
+                            <label name="EntityName" class="control-label" style="text-align:left;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">Service type : </label>
+                        <div class="col-sm-5">
+                            <label name="ServiceType" class="control-label" style="text-align:left;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">Tag : </label>
+                        <div class="col-sm-9">
+                            <label name="Tag" class="control-label" style="text-align:left;"></label>
+                            <br>
+                            <div [style.display]="(showOldSubId == true) ? 'inline' : 'none' " >
+                                <label name="OldTag" class="control-label" style="color:blue;border-bottom:dotted 1px blue;text-align:left"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">BIC code : </label>
+                        <div class="col-sm-9">
+                            <label name="BicCode" class="control-label" style="text-align:left;"></label>
+                            <br>
+                            <div [style.display]="(showOldAccountBIC == true) ? 'inline' : 'none' " >
+                                <label name="OldBicCode" class="control-label" style="color:blue;border-bottom:dotted 1px blue;text-align:left"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">Number : </label>
+                        <div class="col-sm-9">
+                            <label name="Number" class="control-label" style="text-align:left;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">Type : </label>
+                        <div class="col-sm-9">
+                            <label name="Type" class="control-label" style="text-align:left;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">Currency : </label>
+                        <div class="col-sm-9">
+                            <label name="Currency" class="control-label" style="text-align:left;"></label>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-sm-3 control-label" style="text-align:right">Description : </label>
+                        <div class="col-sm-9">
+                            <label name="Description" class="control-label" style="text-align:left;"></label>
+                            <br>
+                            <div [style.display]="(showOldDescription == true) ? 'inline' : 'none' " >
+                                <label name="OldDescription" class="control-label" style="color:blue;border-bottom:dotted 1px blue;text-align:left"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div [style.display]="(isOAShowLimit) ? 'inline' : 'none' ">
+                        <div [style.display]="(isPayment) ? 'inline' : 'none' ">
+                            <div class="row form-group">
+                                <label class="col-sm-3 control-label" style="text-align:right">Daily limit : </label>
+                                <div class="col-sm-9">
+                                    <label name="DailyLimit" class="control-label" style="text-align:left;"></label>
+                                    <br>
+                                    <div [style.display]="(showOldPaymentLimit == true) ? 'inline' : 'none' " >
+                                        <label name="OldDailyLimit" class="control-label" style="color:blue;border-bottom:dotted 1px blue;text-align:left"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div [style.display]="(!isEDDA) ? 'inline' : 'none' ">
+                        <div class="row form-group">
+                            <label class="col-sm-3 control-label" style="text-align:right">IAFT charges : </label>
+                            <div class="col-sm-9">
+                                <label name="IAFTCharge" class="control-label" style="text-align:left;"></label>
+                                <br>
+                                <div [style.display]="(showOldIAFTCharge == true) ? 'inline' : 'none' " >
+                                    <label name="OldIAFTCharge" class="control-label" style="color:blue;border-bottom:dotted 1px blue;text-align:left"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <label class="col-sm-3 control-label" style="text-align:right">IBFT charges : </label>
+                            <div class="col-sm-9">
+                                <label name="IBFTCharge" class="control-label" style="text-align:left;"></label>
+                                <br>
+                                <div [style.display]="(showOldIBFTCharge == true) ? 'inline' : 'none' " >
+                                    <label name="OldIBFTCharge" class="control-label" style="color:blue;border-bottom:dotted 1px blue;text-align:left"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div [style.display]="(isLookup) ? 'inline' : 'none' ">
+                        <div class="row form-group">
+                            <label class="col-sm-3 control-label" style="text-align:right">Default account :</label>
+                            <div class="col-sm-1 check-box" >
+                                <input type="checkbox" class="filled-in" name="groupIndicator" [(ngModel)]="model.GroupIndicator" #groupIndicator="ngModel" disabled>
+                                <br>
+                                <div [style.display]="(showOldGroupIndicator == true) ? 'inline' : 'none' " >
+                                    <label name="OldGroupIndicator" class="control-label" style="color:blue;border-bottom:dotted 1px blue;text-align:left"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="row form-group">
+                        <div class="col-sm-11">
+                            <button type="button" class="btn btn-primary pull-right" (click)="approve()"  style="margin-left:2px;"><i class="fa fa-fw fa-check"></i> Approve</button>
+                            <button type="button" class="btn btn-danger pull-right"  (click)="reject()" style="margin-left:2px;"><i class="fa fa-fw fa-times"></i> Reject</button>
+                            <button type="button" class="btn btn-warning pull-right" (click)="redo()" style="margin-left:2px;" disabled><i class="fa fa-fw fa-repeat"></i> Redo</button>
+                            <button type="button" class="btn btn-default prev-step pull-right" (click)="back()" style="margin-left:2px;"><i class="fa fa-fw fa-chevron-left"></i>Back</button>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

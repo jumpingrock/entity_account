@@ -1,0 +1,485 @@
+<!-- Action bar -->
+<div [style.display]="(showEntityList == true && showEntityAccountList == false) ? 'inline' : 'none' ">
+    <breadcrumbs active="{{action}}"></breadcrumbs>
+</div>
+
+<div [style.display]="(showEntityAccountList == true && showEntityAccountDetail == false && showEntityAccountAdd == false && showEntityAccountUpdate == false) ? 'inline' : 'none' ">
+    <breadcrumbs active="{{action}}" [insert]="add"></breadcrumbs>
+</div>
+
+<div [style.display]="(showEntityAccountAdd == true && showEntityAccountDetail == false) ? 'inline' : 'none' ">
+    <breadcrumbs active="{{action}}" [inquiry]="inquiry"></breadcrumbs>
+</div>
+
+<div [style.display]="(showEntityAccountDetail == true && showEntityAccountAdd == false) ? 'inline' : 'none' ">
+    <breadcrumbs active="{{action}}" [insert]="add" [delete]="delete" [update]="update"></breadcrumbs>
+</div>
+
+<div [style.display]="(showEntityAccountDetail == false && showEntityAccountUpdate == true && showEntityAccountAdd == false) ? 'inline' : 'none' ">
+    <breadcrumbs active="{{action}}" [inquiry]="inquiry" [insert]="add" [delete]="delete" [update]="update"></breadcrumbs>
+</div>
+
+<!-- Frame of the page -->
+<div class="container-fluid">
+    <form (ngSubmit)="search()" #f="ngForm" class="form-horizontal">
+        <div class="row form-group">
+            <div class="col-sm-12 card">
+                <br>
+                <div class="row form-group">
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <label class="col-sm-1 control-label" style="text-align:right"></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="searchInput" class="form-control" SFLUppercase [(ngModel)]="model.SearchInput" #searchInput="ngModel" maxlength="140" autocomplete="off" placeholder="Search">
+                            </div>
+                            <div class="col-sm-3">
+                                <select name="searchType" class="form-control" [(ngModel)]="model.SearchType" #searchType="ngModel">
+                                    <option value="accountNo">Account number</option>
+                                    <option value="uenNo">UEN number</option>
+                                    <option value="entityName">Entity name</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <button class="btn btn-primary pull-left" style="margin-left:2px;"><i class="fa fa-fw fa-search"></i> Search</button>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div *ngIf="searchEntityList">
+                    <br>
+                    <div class="row form-group">
+                        <!--======================================================================================================================================
+                        Search list table frame at the left panel [Entity list]
+                        ======================================================================================================================================="-->
+                        <div class="col-sm-3">
+                            <div *ngIf="searchEntityList" class="card-header">Entity List</div>
+                            <table *ngIf="searchEntityList" class="table table-hover table-striped table-bordered" id="table-hover-able">
+                                <thead class="thead-default">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Entity Name</th>
+                                        <th>Service Type</th>
+                                    </tr>
+                                </thead> 
+
+                                <tbody>
+                                    <tr *ngFor="let list of searchEntityList" class="clickable-row" (click)="entityAccountList(list,f)">
+                                        <td>{{list.EntityNumber}}</td>
+                                        <td>{{list.Name}}</td>
+                                        <td>{{list.ServiceType}}</td>
+                                    </tr>
+                                </tbody>
+
+                                <td colspan="3" style="border-color:transparent">
+                                    <div class="paginator">
+                                        <app-paginator *ngIf="searchEntityList" [total]="total_record" [select]="search"></app-paginator>
+                                    </div>
+                                </td>
+                            </table>
+                        </div>
+                        
+                        <!--======================================================================================================================================
+                        Entity account frame at the right panel [Entity account list]
+                        ======================================================================================================================================="-->
+                        <div class="col-sm-9">
+                            <!-- Inquiry list -->
+                            <div class="card-header">Account List</div>
+                            <div class="card-block">
+                                <div [style.display]="(showEntityAccountList == true) ? 'inline' : 'none' ">
+                                    <div class="row form-group">
+                                        <label class="col-sm-3 control-label" style="text-align:right">Entity name : </label>
+                                        <div class="col-sm-9">
+                                            <label name="EntityName" class="control-label" style="text-align:left;"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-sm-3 control-label" style="text-align:right">Service type : </label>
+                                        <div class="col-sm-9">
+                                            <label name="ServiceName" class="control-label" style="text-align:left;"></label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-sm-12">
+                                        <table *ngIf="entityAccountRecordList" class="table table-hover table-striped table-bordered" id="table-hover-able">
+                                            <thead class="thead-default">
+                                                <tr>
+                                                    <th>Description</th>
+                                                    <th>Number</th>
+                                                    <th>Type</th>
+                                                    <th>Currency</th>
+                                                    <th *ngIf="isPayment">Tag</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody *ngIf="!noRecord">
+                                                <tr *ngFor="let list of entityAccountRecordList" class="clickable-row" (click)="entityServiceDetails(list)">
+                                                    <td>{{list.Description}}</td>
+                                                    <td>{{list.AccountNumber}}</td>
+                                                    <td>{{list.AccountTypeDescription}}</td>
+                                                    <td>{{list.AccountCurrency}}</td>
+                                                    <td *ngIf="isPayment">{{list.SubIdDescription}}</td>
+                                                </tr>
+                                            </tbody>
+                        
+                                            <tbody *ngIf="noRecord && isPayment">
+                                                <td colspan="5">No record found</td>
+                                            </tbody>
+
+                                            <tbody *ngIf="noRecord && !isPayment">
+                                                <td colspan="4">No record found</td>
+                                            </tbody>
+          
+                                            <td *ngIf="isPayment" colspan="5" style="border-color:transparent">
+                                                <div class="paginator">
+                                                    <app-paginator *ngIf="!noRecord" [total]="total_acc_record" [select]="entityAccListPages"></app-paginator>
+                                                </div>
+                                            </td>
+                                           
+                                            <td *ngIf="!isPayment" colspan="4" style="border-color:transparent">
+                                                <div class="paginator">
+                                                    <app-paginator *ngIf="!noRecord" [total]="total_acc_record" [select]="entityAccListPages"></app-paginator>
+                                                </div>
+                                            </td>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+
+                            <!--======================================================================================================================================
+                            Entity account details frame at the right bottom panel [Entity account details]
+                            ======================================================================================================================================="-->
+                            <div [style.display]="(showEntityAccountList == true && showEntityAccountAdd == false) ? 'inline' : 'none' ">
+                                <div class="card-header">Account Details</div>
+                                <div class="card-block">
+                                    
+                                    <!--=====================================
+                                        Show Details
+                                    ====================================="-->
+                                    <div [style.display]="(showEntityAccountDetail == true) ? 'inline' : 'none' ">
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Tag : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Tag" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">BIC code : </label>
+                                            <div class="col-sm-9">
+                                                <label name="BICCode" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>                                      
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Number : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Number" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Type : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Type" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Currency : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Currency" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Description : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Description" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div [style.display]="(isOAShowLimit) ? 'inline' : 'none' ">
+                                            <div [style.display]="(isPayment) ? 'inline' : 'none' ">
+                                                <div class="row form-group">
+                                                    <label class="col-sm-3 control-label" style="text-align:right">Daily limit : </label>
+                                                    <div class="col-sm-9">
+                                                        <label name="DailyLimit" class="control-label" style="text-align:left;"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="!isEDDA">
+                                            <div class="row form-group">
+                                                <label class="col-sm-3 control-label" style="text-align:right">IAFT charges : </label>
+                                                <div class="col-sm-9">
+                                                    <label name="IAFTCharge" class="control-label" style="text-align:left;"></label>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="col-sm-3 control-label" style="text-align:right">IBFT charges : </label>
+                                                <div class="col-sm-9">
+                                                    <label name="IBFTCharge" class="control-label" style="text-align:left;"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <div [style.display]="(isRAShowLookup) ? 'inline' : 'none' ">
+                                            <div class="row form-group">
+                                                <label class="col-sm-3 control-label" style="text-align:right">Default account :</label>
+                                                <div class="col-sm-1 check-box" >
+                                                    <input type="checkbox" class="filled-in" name="groupIndicator" [(ngModel)]="model.GroupIndicator" #groupIndicator="ngModel" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    <!--=====================================
+                                        Show Update
+                                    ====================================="-->
+                                    <div *ngIf="showEntityAccountUpdate">
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Tag : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Tag" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">BIC code : </label>
+                                            <div class="col-sm-9">
+                                                <label name="BICCode" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>                                     
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Number : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Number" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Type : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Type" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Currency : </label>
+                                            <div class="col-sm-9">
+                                                <label name="Currency" class="control-label" style="text-align:left;"></label>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Description :</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" name="description" class="form-control" SFLCharacter [SFLChanged]="data?.Description" [(ngModel)]="model.Description" #description="ngModel" maxlength="50" SFLRequired autofocus autocomplete="off">
+                                                <span class="text-danger" [hidden]="!EDITMODE || description.valid || (description.pristine && description.untouched)">Description is required</span>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="isOAShowLimit">
+                                            <div *ngIf="isPayment">
+                                                <div class="row form-group">
+                                                    <label class="col-sm-3 control-label" style="text-align:right">Daily limit :</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" name="paymentLimit" class="form-control" SFLDecimal SFLPrecision="2" SFLMinValue="0" SFLMaxValue="999999999999999" [SFLChanged]="data?.PaymentLimit" [(ngModel)]="model.PaymentLimit" #paymentLimit="ngModel" autofocus autocomplete="off" (change)='checkDecimal(f)'>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="!isEDDA">
+                                            <div class="row form-group">
+                                                <label class="col-sm-3 control-label" style="text-align:right">IAFT charges :</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="iaftCharge" class="form-control" SFLDecimal SFLPrecision="2" SFLMinValue="0" SFLMaxValue="999999999999999" [SFLChanged]="data?.IAFTCharge" [(ngModel)]="model.IAFTCharge" #iaftCharge="ngModel" autofocus autocomplete="off" (change)='checkDecimal(f)'>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <label class="col-sm-3 control-label" style="text-align:right">IBFT charges :</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" name="ibftCharge" class="form-control" SFLDecimal SFLPrecision="2" SFLMinValue="0" SFLMaxValue="999999999999999" [SFLChanged]="data?.IBFTCharge" [(ngModel)]="model.IBFTCharge" #ibftCharge="ngModel" autofocus autocomplete="off" (change)='checkDecimal(f)'>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div [style.display]="isRAShowLookup ? 'inline' : 'none' ">
+                                            <div class="row form-group" style="margin-top:10px">
+                                                <label class="col-sm-3 control-label" style="text-align:right">Default account :</label>
+                                                <div class="col-sm-1 check-box" >
+                                                    <input type="checkbox" class="filled-in" name="groupIndicator" [(ngModel)]="model.GroupIndicator" #groupIndicator="ngModel" (click)="checkOldData(f,$event);">
+                                                    <br>
+                                                    <div [style.display]="(showOldGroupIndicator == true) ? 'inline' : 'none' " >
+                                                        <label name="OldGroupIndicator" class="control-label" style="color:blue;text-align:left"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row form-group">
+                                            <div class="col-sm-11">
+                                                <button type="button" class="btn btn-primary pull-right" (click)="doUpdate(f)" style="margin-left:2px;"><i class="fa fa-fw fa-envelope"></i> Submit</button>
+                                                <button type="button" class="btn btn-warning pull-right" (click)="clearUpdateData(f)" style="margin-left:2px;"><i class="fa fa-fw fa-eraser"></i> Clear</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div [style.display]="(showEntityAccountDetail || showEntityAccountUpdate) ? 'inline' : 'none' ">
+                                    <div class="card-header">Maintenance Information</div>
+                                    <div class="card-block">
+                                        <div class="row">
+                                            <label class="col-sm-4 control-label" style="text-align:right" >Creation maker / Date & Time :</label>
+                                            <div class="col-sm-8">
+                                                <label class="col-sm-4 control-label" name="CreateMakerId"></label> &nbsp; / &nbsp;
+                                                <label class="col-sm-3 control-label" name="CreateMakerDate" ></label>
+                                                <label class="col-sm-2 control-label" name="CreateMakerTime" ></label>
+                                            </div>
+                                        </div>		
+                                        <div class="row">
+                                            <label class="col-sm-4 control-label" style="text-align:right" >Creation checker / Date & Time :</label>
+                                            <div class="col-sm-8">
+                                                <label class="col-sm-4 control-label" name="CreateCheckerId" ></label> &nbsp; / &nbsp;
+                                                <label class="col-sm-3 control-label" name="CreateCheckerDate" ></label>
+                                                <label class="col-sm-2 control-label" name="CreateCheckerTime" ></label>
+                                            </div>
+                                        </div>			
+                                        <div class="row">
+                                            <label class="col-sm-4 control-label" style="text-align:right" >Last maint maker / Date & Time :</label>
+                                            <div class="col-sm-8">
+                                                <label class="col-sm-4 control-label" name="MakerId" ></label> &nbsp; / &nbsp;
+                                                <label class="col-sm-3 control-label" name="MakerDate" ></label>
+                                                <label class="col-sm-2 control-label" name="MakerTime" ></label>
+                                            </div>
+                                        </div>			
+                                        <div class="row">
+                                            <label class="col-sm-4 control-label" style="text-align:right" >Last maint checker / Date & Time :</label>
+                                            <div class="col-sm-8">
+                                                <label class="col-sm-4 control-label" name="CheckerId"></label> &nbsp; / &nbsp;
+                                                <label class="col-sm-3 control-label" name="CheckerDate"></label>
+                                                <label class="col-sm-2 control-label" name="CheckerTime"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--=====================================
+                                Show Add
+                            ====================================="-->
+                            <div *ngIf="showEntityAccountList == true && showEntityAccountAdd == true">
+                                <div class="card-header">Add Account</div>
+                                <div class="card-block">
+                                    <div class="row form-group">
+                                        <label class="col-sm-3 control-label" style="text-align:right">Tag :</label>
+                                        <div class="col-sm-8">
+                                            <div *ngIf="isEwallet || isCollection || isEDDA || isLookup">
+                                                <select disabled name="subId" class="form-control" autocomplete="off" SFLRequired [(ngModel)]="model.SubId" #subId="ngModel">
+                                                    <option value="" disabled="true" default selected>Please select</option>
+                                                    <option *ngFor="let oaType of oaAccType" value="{{oaType.Value}}">{{oaType.DisplayValue}}</option>
+                                                </select>
+                                            </div>
+                                            <div *ngIf="!isEwallet && !isCollection && !isEDDA && !isLookup">
+                                                <select name="subId" class="form-control" autocomplete="off" SFLRequired [(ngModel)]="model.SubId" #subId="ngModel" (change)="definedSubIDService(model.SubId,f)">
+                                                    <option value="" disabled="true" default selected>Please select</option>
+                                                    <option *ngFor="let oaType of oaAccType" value="{{oaType.Value}}">{{oaType.DisplayValue}}</option>
+                                                </select>
+                                                <span class="text-danger" [hidden]="!EDITMODE || subId.valid || (subId.pristine && subId.untouched)">Tag is required</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-sm-3 control-label" style="text-align:right">BIC code :</label>
+                                        <div class="col-sm-8">
+                                            <select [disabled]=(isOA||isLookup) name="accountBIC" class="form-control" autocomplete="off" SFLRequired [(ngModel)]="model.AccountBIC" #accountBIC="ngModel" (change)="checkOwnBank(f)">
+                                                <option value="" disabled="true" default selected>Please select</option>
+                                                <option *ngFor="let bicCd of bankIdentity" value="{{bicCd.Value}}">{{bicCd.DisplayValue}}</option>
+                                            </select>
+                                            <span class="text-danger" [hidden]="!EDITMODE || accountBIC.valid || (accountBIC.pristine && accountBIC.untouched)">BIC code is required</span>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-sm-3 control-label" style="text-align:right">Number :</label>
+                                        <div class="col-sm-6">
+                                            <input [disabled]='validAccount && isOwnBank' type="text" name="accountNumberNew" class="form-control" SFLRequiredInteger maxlength="34" [(ngModel)]="model.AccountNumberNew" #accountNumberNew="ngModel" autofocus autocomplete="off">
+                                            <span class="text-danger" [hidden]="!EDITMODE || accountNumberNew.valid || !isOwnBank || validAccount || (accountNumberNew.pristine && accountNumberNew.untouched)">Account number is required (Numeric)</span>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <button [disabled]='validAccount || !isOwnBank' class="btn btn-primary pull-left" style="margin-left:2px;" type='button' (click)="searchAccount(f)"><i class="fa fa-fw fa-search"></i> Search</button>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-sm-3 control-label" style="text-align:right">Type :</label>
+                                        <div class="col-sm-8">
+                                            <select [disabled]='!validAccount||isOA||isOwnBank' name="accountType" class="form-control" autocomplete="off" SFLRequired [(ngModel)]="model.AccountType" #accountType="ngModel">
+                                                <option *ngFor="let acctype of accType" value="{{acctype.Value}}">{{acctype.DisplayValue}}</option>
+                                            </select>
+                                            <span class="text-danger" [hidden]="!validAccount || isOA || isOwnBank || accountType.valid || (accountType.pristine && accountType.untouched)">Account type is required</span>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-sm-3 control-label" style="text-align:right">Currency :</label>
+                                        <div class="col-sm-8">
+                                            <select [disabled]='!validAccount||isOA||isOwnBank' name="accountCurrency" class="form-control" autocomplete="off" SFLRequired [(ngModel)]="model.AccountCurrency" #accountCurrency="ngModel">
+                                                <option *ngFor="let ccyCode of currencyCode" value="{{ccyCode.Value}}">{{ccyCode.DisplayValue}}</option>
+                                            </select>
+                                            <span class="text-danger" [hidden]="!validAccount || isOA || isOwnBank || accountCurrency.valid || (accountCurrency.pristine && accountCurrency.untouched)">Account currency is required</span>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <label class="col-sm-3 control-label" style="text-align:right">Description :</label>
+                                        <div class="col-sm-8">
+                                            <input [disabled]='!validAccount' type="text" name="descriptionNew" class="form-control" [(ngModel)]="model.DescriptionNew" #descriptionNew="ngModel" maxlength="50" SFLCharacter SFLRequired autofocus autocomplete="off">
+                                            <span class="text-danger" [hidden]="!EDITMODE || descriptionNew.valid || (descriptionNew.pristine && descriptionNew.untouched)">Description is required</span>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="isOAShowLimitAdd&&!isRAShowBIC">
+                                        <div *ngIf="isPayment">  
+                                            <div class="row form-group">
+                                                <label class="col-sm-3 control-label" style="text-align:right">Daily limit :</label>
+                                                <div class="col-sm-8">
+                                                    <input [disabled]=(!validAccount) type="text" name="paymentLimitNew" class="form-control" SFLDecimal SFLPrecision="2" SFLMinValue="0" SFLMaxValue="999999999999999" [(ngModel)]="model.PaymentLimitNew" #paymentLimitNew="ngModel" autofocus autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="!isEDDA"> 
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">IAFT charges :</label>
+                                            <div class="col-sm-8">
+                                                <input [disabled]=(!validAccount) type="text" name="iaftChargeNew" class="form-control" SFLDecimal SFLPrecision="2" SFLMinValue="0" SFLMaxValue="999999999999999" [(ngModel)]="model.IAFTChargeNew" #iaftChargeNew="ngModel" autofocus autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">IBFT charges :</label>
+                                            <div class="col-sm-8">
+                                                <input [disabled]=(!validAccount) type="text" name="ibftChargeNew" class="form-control" SFLDecimal SFLPrecision="2" SFLMinValue="0" SFLMaxValue="999999999999999" [(ngModel)]="model.IBFTChargeNew" #ibftChargeNew="ngModel" autofocus autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div [style.display]="isRAShowLookup ? 'inline' : 'none' ">
+                                        <div class="row form-group">
+                                            <label class="col-sm-3 control-label" style="text-align:right">Default account :</label>
+                                            <div class="col-sm-3 check-box" >
+                                                <div [style.display]="(!validAccount) ? 'inline' : 'none' ">
+                                                    <input type="checkbox" class="filled-in" name="groupIndicator" [(ngModel)]="model.GroupIndicator" #groupIndicator="ngModel" disabled>
+                                                </div>
+                                                <div [style.display]="(validAccount) ? 'inline' : 'none' ">
+                                                    <input type="checkbox" class="filled-in" name="groupIndicator" [(ngModel)]="model.GroupIndicator" #groupIndicator="ngModel"> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row form-group">
+                                        <div class="col-sm-11">
+                                            <button type="button" [disabled]='!validAccount' class="btn btn-primary pull-right" (click)="doAdd(f)" style="margin-left:2px;"><i class="fa fa-fw fa-envelope"></i> Submit</button>
+                                            <button type="button" [disabled]='!validAccount' class="btn btn-warning pull-right" (click)="clearAddData(f)" style="margin-left:2px;"><i class="fa fa-fw fa-eraser"></i> Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+    </form>
+</div>
+<br>
+<br>
