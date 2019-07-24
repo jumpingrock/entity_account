@@ -32,6 +32,8 @@ import { EntityAccountInquiryComponent } from './entity_account_inquiry/entity-a
 import { EntityAccountApprovalComponent } from './entity_account_approval/entity-account-approval.component';
 
 import { EntityAccountService } from './entity-account.service';
+import { EntityAccountInquiryFirstComponent } from './entity-account-inquiry-first/entity-account-inquiry-first.component';
+import { EntityAccountInquirySecondComponent } from './entity-account-inquiry-second/entity-account-inquiry-second.component';
 
 
 @NgModule({
@@ -44,7 +46,7 @@ import { EntityAccountService } from './entity-account.service';
     routing,
     SharedModule ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  declarations: [ EntityAccountComponent, EntityAccountInquiryComponent, EntityAccountApprovalComponent],
+  declarations: [ EntityAccountComponent, EntityAccountInquiryComponent, EntityAccountApprovalComponent, EntityAccountInquiryFirstComponent, EntityAccountInquirySecondComponent],
   providers: [ EntityAccountService ],
   bootstrap:    [ EntityAccountComponent ]
 })

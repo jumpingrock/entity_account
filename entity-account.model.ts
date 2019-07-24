@@ -102,3 +102,21 @@ export class EntityAccount {
     SearchType: string                               = "";
 }
 
+export class UrlInfo {
+	SearchInput: string = "";
+	SearchType: string = "";
+	Origination: string = "";
+	EntityNo: string = "";
+	EntityName: string = "";
+	SearchPage: string = "";
+	InqPage: number = 0;
+	RaProxy: string = "";
+	RaType: string = "";
+	CcyCd: string= "";
+	Category: string ="";
+	Identification: string = "";
+	Chargety: string ="";
+	Segment: string = "";
+	Paginator3: number =0;
+	
+}

@@ -24,6 +24,7 @@ import { EntityAccountComponent } from './entity-account.component';
 import { EntityAccountInquiryComponent } from './entity_account_inquiry/entity-account-inquiry.component';
 import { EntityAccountApprovalComponent } from './entity_account_approval/entity-account-approval.component';
 import { FullLayoutComponent } from '../../layouts/full-layout.component';
+import { EntityAccountInquiryFirstComponent } from './entity-account-inquiry-first/entity-account-inquiry-first.component';
 
 export const EntityAccountRoutes: Routes = [
     {
@@ -43,8 +44,13 @@ export const EntityAccountRoutes: Routes = [
                     title: 'Payments / Entity Account Services'
                 }
             },
-            {
-                path: 'inquiry', component: EntityAccountInquiryComponent, data: {
+            // {
+            //     path: 'inquiry', component: EntityAccountInquiryComponent, data: {
+            //         title: 'Payments / Entity Account Services'
+            //     }
+            // },
+			{
+                path: 'inquiryfirst', component: EntityAccountInquiryFirstComponent, data: {
                     title: 'Payments / Entity Account Services'
                 }
             },

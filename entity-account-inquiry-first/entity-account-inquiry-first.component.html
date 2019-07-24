@@ -1,0 +1,70 @@
+<div class="container-fluid">
+    <div class="card">
+        <div id="breadcrumb" class="card-header">
+            <breadcrumbs active="search" [insert]="insert" ></breadcrumbs>
+        </div>
+
+        <form (ngSubmit)="search()" #f="ngForm" class="form-horizontal">
+            <div class = 'card-block'>
+                <!-- Entity name -->
+                <div class="row form-group">
+                    <label class="col-sm-3 control-label" style="text-align:right">Entity name :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="searchInputEN" autocomplete="off" maxlength="140" SFLUppercase [(ngModel)]="model.SearchInputEN">                            
+                    </div>
+                </div>
+                <!-- Account number -->
+                <div class="row form-group">
+                    <label class="col-sm-3 control-label" style="text-align:right">Account number :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="searchInputAN" autocomplete="off" maxlength="140" SFLUppercase [(ngModel)]="model.SearchInputAN">                            
+                    </div>
+                </div>
+                <!-- UEN number -->
+                <div class="row form-group">
+                    <label class="col-sm-3 control-label" style="text-align:right">UEN number :</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="searchInputUN" autocomplete="off" maxlength="140" SFLUppercase [(ngModel)]="model.SearchInputUN">                            
+                    </div>
+                </div>
+                <br>
+                <div class="row form-group">
+                    <div class="col-sm-11">
+                        <button class="btn btn-primary pull-right"><i class="fa fa-fw fa-search"></i> Search</button>
+                        <button class="btn btn-danger pull-right" type="button" (click)="clearList(f)"><i class="fa fa-fw fa-times"></i> Cancel</button>
+                    </div>
+                </div>                                               
+
+                <div *ngIf="searchEntityList">
+                <!-- Listing -->
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-12">
+                        <table  class="table table-auto table-hover table-striped table-bordered" id="table-hover-able">
+                            <thead class="thead-default">
+                                <tr>
+                                    <th>Entity number</th>
+                                    <th>Entity name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- <tr *ngFor="let list of searchEntityList | paginate: { id:'entitysearch', itemsPerPage:10, currentPage: p, totalItems:total_record }" class="clickable-row" (click)="detail(list)">                                            
+                                    <td>{{list.EntityNumber}}</td>
+                                    <td>{{list.Name}}</td>
+                                    <td>{{list.Status}}</td>
+                                </tr> -->
+                            </tbody>
+
+                            <td colspan="6" style="border-color:transparent">
+                                <br>
+                                <!-- <pagination-controls id="entitysearch" *ngIf="searchEntityList" maxSize="10" (pageChange)="search($event)"></pagination-controls>    -->
+                            </td>
+                        </table>                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

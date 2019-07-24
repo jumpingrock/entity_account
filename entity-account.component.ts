@@ -27,7 +27,7 @@ import { environment } from '../../../environments/environment';
 import { Security } from '../../framework/security/security';
 
 import { EntityAccountService } from './entity-account.service'
-import { Search } from './entity-account.model'
+import { Search, UrlInfo } from './entity-account.model'
 
 @Component({
     templateUrl: 'entity-account.component.html',
@@ -39,6 +39,17 @@ export class EntityAccountComponent extends CRUDComponent implements OnInit {
     Variable Initialization
     ----------------------------------------------------------------------------------------------------------------------------------------*/
     initModel: Search = new Search();
+	urlinfo: UrlInfo = new UrlInfo();
+	// initModel: EntitySearch = new EntitySearch();
+	total_record = 0;
+	action:string = "inquiry";
+	showDetails:boolean = false;
+	showUpdate:boolean = false;
+	// searchEntityList: EntitySearch[];
+	// entityDetail: Entity = new Entity();
+	searchInput:string;
+	searchType:string;
+	p: number;
 
     constructor(router: Router, private entityAccountService: EntityAccountService, private notify: NotificationsService, formBuilder: FormBuilder, private route: Router) {
         super('EntityAccountComponent', router);
@@ -54,26 +65,41 @@ export class EntityAccountComponent extends CRUDComponent implements OnInit {
     /*----------------------------------------------------------------------------------------------------------------------------------------
     Search list function
     ----------------------------------------------------------------------------------------------------------------------------------------*/
-    search() {
+    search = (page:number=1) => {
         this.notify.loadingIcon("Loading...");
+		this.notify.loadingIcon("Loading...");
+		this.action = "inquiry";
+		this.showUpdate = false;
+		this.showDetails = false;
+		// this.entityDetail = new Entity();
 
-        if((this.model['SearchInput'] == null || this.model['SearchInput'] == '') && this.model['SearchType'] == ''){
-            this.notify.eventBus.clearLoadingIcon();
-            this.notify.error("Search input and search type must be defined");
-
-        }else if((!(this.model['SearchInput'] == null || this.model['SearchInput'] == '')) && this.model['SearchType'] == ''){
-            this.notify.eventBus.clearLoadingIcon();
-            this.notify.error("Search type must be defined");
-
-        }else if((this.model['SearchInput'] == null || this.model['SearchInput'] == '') && !(this.model['SearchType'] == '')){
-            this.notify.eventBus.clearLoadingIcon();
-            this.notify.error("Search input must be defined");
-
-        }else{
-            this.navigate("./home/" + this.menu.menulink + "/inquiry", {search_input:this.model['SearchInput'], search_type:this.model['SearchType']});
-        }
+		if((this.model['SearchInputAN'] == null || this.model['SearchInputAN'] == '') 
+		&& (this.model['SearchInputEN'] == null || this.model['SearchInputEN'] == '') 
+		&& (this.model['SearchInputUN'] == null || this.model['SearchInputUN'] == '')){
+		this.notify.eventBus.clearLoadingIcon();
+		this.notify.error("Either one of the search field must be defined");
+		}
+		else{
+		this.getSearchParameter(this.model['SearchInput'], this.model['SearchType']);
+		var standardParamInfo = `?user_id="${Security.getSessionItem("user").id}"&menu_id="${this.menu.id}"&menu_link="${this.menu.menulink}"`;
+		var more_record;
+		if((page-1)>0){
+			more_record = 'Y';
+		}else{
+			more_record = 'N';
+		}
+		console.log(this.model);
+		this.entityAccountService.inputSearch(standardParamInfo, this.model, page-1, environment.TASK_MAX_RECORD, more_record).then(res => {
+			// this.searchEntityList = res.RecordListing;
+			this.total_record = res.TotalRecords;
+			this.p = page;
+			this.notify.eventBus.clearLoadingIcon();
+		}).catch(er => {
+			this.notify.eventBus.clearLoadingIcon();
+			this.notifyErrorCallBackHome(er);
+		});
+    	}
     }
-    
     notifyError(er){
         this.notify.error(er);
     }
@@ -86,5 +112,40 @@ export class EntityAccountComponent extends CRUDComponent implements OnInit {
     add(){
         this.navigate("./home/" + this.menu.menulink + "/add");
     }
+	getSearchParameter(SearchInput:string, SearchType:string){
+		this.model['AccountNo'] = "";
+		this.model['UENNo'] = "";
+		this.model['EntityName'] = "";
+		this.model['AccountNo'] = this.model['SearchInputAN'];
+		this.model['UENNo'] = this.model['SearchInputUN'];
+		this.model['EntityName'] = this.model['SearchInputEN'];
+		if (this.model['SearchInputAN']){
+			this.urlinfo["SearchType"] = 'SearchInputAN';
+			this.urlinfo["SearchInput"] = this.model['SearchInputAN'];
+		}else if (this.model['SearchInputEN']) {
+			this.urlinfo["SearchType"] = 'SearchInputEN';
+			this.urlinfo["SearchInput"] = this.model['SearchInputEN'];
+		}else if (this.model['SearchInputUN']) {
+			this.urlinfo["SearchType"] = 'SearchInputUN';
+			this.urlinfo["SearchInput"] = this.model['SearchInputUN'];
+		}else if(SearchType == "SearchInputEN"){
+			this.model['EntityName'] = SearchInput
+			this.model['SearchInputEN'] = SearchInput
+		}else if (SearchType == 'SearchInputAN'){
+			this.model['SearchInputAN'] = SearchInput
+			this.model['AccountNo'] = SearchInput;
+		}else if (SearchType == 'SearchInputUN'){
+			this.model['SearchInputUN'] = SearchInput
+			this.model['UENNo'] = SearchInput;
+		}
+	console.log(this.urlinfo);
+  }
+  notifyErrorCallBackHome(e:string){
+    this.notify.errorWithNavigateLink(e, answer => {
+      if (answer == 'ok') {
+        this.navigate("./home/" + this.menu.menulink + "/search");
+      }
+    });
+  }
     
 }
